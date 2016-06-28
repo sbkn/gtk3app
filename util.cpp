@@ -1,8 +1,12 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+
 #include "util.h"
 
 ExampleWindow::ExampleWindow()
 : m_VBox(Gtk::ORIENTATION_VERTICAL),
+  m_HBox(Gtk::ORIENTATION_HORIZONTAL),
   m_ButtonBox(Gtk::ORIENTATION_VERTICAL),
   m_Button_Quit("_Quit", true),
   m_Button_Buffer1("Use buffer 1"),
@@ -10,18 +14,23 @@ ExampleWindow::ExampleWindow()
 {
   set_title("Idleon");
   set_border_width(5);
-  set_default_size(400, 600);
+  set_default_size(1000, 600);
   this->set_icon_from_file("icon.png");
 
   add(m_VBox);
+  add(m_HBox);
 
-  //Add the TreeView, inside a ScrolledWindow, with the button underneath:
+  // ADD TEXTVIEW
+  m_ScrolledWindow_Label.add(m_TextLabel);
+  m_ScrolledWindow_Label.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+
+  // ADD LABEL
   m_ScrolledWindow.add(m_TextView);
-
-  //Only show the scrollbars when they are necessary:
   m_ScrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-  m_VBox.pack_start(m_ScrolledWindow);
+  m_HBox.pack_start(m_ScrolledWindow_Label);
+  m_HBox.pack_start(m_ScrolledWindow);
+  m_VBox.pack_start(m_HBox);
 
   //Add buttons:
   m_VBox.pack_start(m_ButtonBox, Gtk::PACK_SHRINK);
@@ -74,12 +83,22 @@ void ExampleWindow::on_button_buffer1()
 
 void ExampleWindow::change_buffer_text(std::string text)
 {
-  std::cout << "Changing buffer text .." << std::endl;
 
   Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
   tmp->set_text(text);
 
   m_TextView.set_buffer(tmp);
+}
+
+void ExampleWindow::change_label_text(std::string text)
+{
+  m_TextLabel.set_text(text);
+}
+
+void ExampleWindow::remove_label_text()
+{
+  std::string tmp = " ";
+  m_TextLabel.set_text(tmp);
 }
 
 void ExampleWindow::on_button_file_clicked()
@@ -94,24 +113,22 @@ void ExampleWindow::on_button_file_clicked()
 
   //Add filters, so that only certain file types can be selected:
 
+  auto filter_csv = Gtk::FileFilter::create();
+  filter_csv->set_name("CSV files");
+  filter_csv->add_mime_type("text/csv");
+  filter_csv->add_mime_type("*.csv");
+  dialog.add_filter(filter_csv);
+
   auto filter_text = Gtk::FileFilter::create();
   filter_text->set_name("Text files");
   filter_text->add_mime_type("text/plain");
   dialog.add_filter(filter_text);
-
-  auto filter_cpp = Gtk::FileFilter::create();
-  filter_cpp->set_name("C/C++ files");
-  filter_cpp->add_mime_type("text/x-c");
-  filter_cpp->add_mime_type("text/x-c++");
-  filter_cpp->add_mime_type("text/x-c-header");
-  dialog.add_filter(filter_cpp);
 
   auto filter_any = Gtk::FileFilter::create();
   filter_any->set_name("Any files");
   filter_any->add_pattern("*");
   dialog.add_filter(filter_any);
 
-  //Show the dialog and wait for a user response:
   int result = dialog.run();
 
   //Handle the response:
@@ -125,6 +142,7 @@ void ExampleWindow::on_button_file_clicked()
       std::string filename = dialog.get_filename();
       std::cout << "File selected: " <<  filename << std::endl;
       this->change_buffer_text(filename);
+      this->read_input_file(filename);
       break;
     }
     case(Gtk::RESPONSE_CANCEL):
@@ -137,5 +155,27 @@ void ExampleWindow::on_button_file_clicked()
       std::cout << "Unexpected button clicked." << std::endl;
       break;
     }
+  }
+}
+
+/**
+  * FILE READING AND STUFF
+  */
+void ExampleWindow::read_input_file(std::string filename)
+{
+  std::ifstream infile(filename);
+  std::string line;
+
+  this->remove_label_text();
+
+  while (std::getline(infile, line))
+  {
+      std::istringstream iss(line);
+      std::string a;
+
+      if (!(iss >> a)) { break; } // error
+
+      std::string tmp = m_TextLabel.get_text();
+      this->change_label_text(tmp + "\n" + a);
   }
 }

@@ -17,11 +17,16 @@ protected:
   void on_button_buffer1();
   void on_button_buffer2();
   void on_button_file_clicked();
+  void read_input_file(std::string);
+  void change_label_text(std::string);
+  void remove_label_text();
 
-  Gtk::Box m_VBox;
+  Gtk::Box m_VBox, m_HBox;
 
+  Gtk::ScrolledWindow m_ScrolledWindow_Label;
   Gtk::ScrolledWindow m_ScrolledWindow;
   Gtk::TextView m_TextView;
+  Gtk::Label m_TextLabel;
 
   Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1, m_refTextBuffer2;
 
