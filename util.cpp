@@ -1,5 +1,6 @@
-#include "util.h"
 #include <iostream>
+#include "util.h"
+#include "filepicker.h"
 
 ExampleWindow::ExampleWindow()
 : m_VBox(Gtk::ORIENTATION_VERTICAL),
@@ -9,9 +10,16 @@ ExampleWindow::ExampleWindow()
 {
   set_title("Idleon");
   set_border_width(5);
-  set_default_size(400, 200);
+  set_default_size(400, 600);
+  this->set_icon_from_file("icon.png");
 
   add(m_VBox);
+
+  FilePicker *filepicker;
+  filepicker = new FilePicker();
+
+
+  m_VBox.pack_start(*filepicker, Gtk::PACK_SHRINK);
 
   //Add the TreeView, inside a ScrolledWindow, with the button underneath:
   m_ScrolledWindow.add(m_TextView);

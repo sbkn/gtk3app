@@ -1,7 +1,7 @@
 CC=g++
-CFLAGS=-Wall
+CFLAGS=-Wall -g
 
 default: program
 
 program: util.cpp test.cpp
-	g++ -o test util.cpp test.cpp `pkg-config gtkmm-3.0 --cflags --libs` $(CFLAGS)
+	g++ -o test filepicker.cpp util.cpp test.cpp `pkg-config gtkmm-3.0 --cflags --libs` $(CFLAGS)

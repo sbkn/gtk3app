@@ -1,5 +1,5 @@
-#include "util.h"
 #include <gtkmm/application.h>
+#include "util.h"
 
 int main (int argc, char *argv[])
 {
@@ -11,6 +11,5 @@ int main (int argc, char *argv[])
 
   helloworld.change_buffer_text(text);
 
-  //Shows the window and returns when it is closed.
   return app->run(helloworld);
 }
