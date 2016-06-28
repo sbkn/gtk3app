@@ -7,8 +7,10 @@
 ExampleWindow::ExampleWindow()
 : m_VBox(Gtk::ORIENTATION_VERTICAL),
   m_HBox(Gtk::ORIENTATION_HORIZONTAL),
+  m_HButtonBox(Gtk::ORIENTATION_HORIZONTAL),
   m_ButtonBox(Gtk::ORIENTATION_VERTICAL),
   m_Button_Quit("_Quit", true),
+  m_Button_Run("Run"),
   m_Button_Buffer1("Use buffer 1"),
   m_Button_File("Choose a File")
 {
@@ -37,7 +39,11 @@ ExampleWindow::ExampleWindow()
 
   m_ButtonBox.pack_start(m_Button_File, Gtk::PACK_SHRINK);
   m_ButtonBox.pack_start(m_Button_Buffer1, Gtk::PACK_SHRINK);
-  m_ButtonBox.pack_start(m_Button_Quit, Gtk::PACK_SHRINK);
+  m_HButtonBox.pack_start(m_Button_Quit, Gtk::PACK_EXPAND_PADDING);
+  m_HButtonBox.pack_start(m_Button_Run, Gtk::PACK_EXPAND_PADDING);
+  m_HButtonBox.set_layout(Gtk::BUTTONBOX_EDGE);
+
+  m_ButtonBox.pack_start(m_HButtonBox);
   m_ButtonBox.set_border_width(5);
   m_ButtonBox.set_spacing(5);
   m_ButtonBox.set_layout(Gtk::BUTTONBOX_END);
@@ -47,6 +53,8 @@ ExampleWindow::ExampleWindow()
               &ExampleWindow::on_button_file_clicked) );
   m_Button_Quit.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_quit) );
+  m_Button_Run.signal_clicked().connect(sigc::mem_fun(*this,
+              &ExampleWindow::on_button_run) );
   m_Button_Buffer1.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_buffer1) );
 
@@ -60,11 +68,6 @@ void ExampleWindow::fill_buffers()
 {
   m_refTextBuffer1 = Gtk::TextBuffer::create();
   m_refTextBuffer1->set_text("This is the text from TextBuffer #1.");
-
-  m_refTextBuffer2 = Gtk::TextBuffer::create();
-  m_refTextBuffer2->set_text(
-          "This is some alternative text, from TextBuffer #2.");
-
 }
 
 ExampleWindow::~ExampleWindow()
@@ -74,6 +77,14 @@ ExampleWindow::~ExampleWindow()
 void ExampleWindow::on_button_quit()
 {
   hide();
+}
+
+void ExampleWindow::on_button_run()
+{
+  std::cout << "RUNNING IT!" << std::endl;
+
+  // DO SOMETHING AWESOME HERE!
+  // CHECK: https://developer.gnome.org/gtkmm-tutorial/stable/sec-multithread-example.html.en
 }
 
 void ExampleWindow::on_button_buffer1()
@@ -101,9 +112,12 @@ void ExampleWindow::remove_label_text()
   m_TextLabel.set_text(tmp);
 }
 
+/**
+  * FILEPICKER
+  */
 void ExampleWindow::on_button_file_clicked()
 {
-  Gtk::FileChooserDialog dialog("Please choose a file",
+  Gtk::FileChooserDialog dialog("Choose a file with IDs",
           Gtk::FILE_CHOOSER_ACTION_OPEN);
   dialog.set_transient_for(*this);
 
@@ -140,19 +154,16 @@ void ExampleWindow::on_button_file_clicked()
 
       //Notice that this is a std::string, not a Glib::ustring.
       std::string filename = dialog.get_filename();
-      std::cout << "File selected: " <<  filename << std::endl;
-      this->change_buffer_text(filename);
+
       this->read_input_file(filename);
       break;
     }
     case(Gtk::RESPONSE_CANCEL):
     {
-      std::cout << "Cancel clicked." << std::endl;
       break;
     }
     default:
     {
-      std::cout << "Unexpected button clicked." << std::endl;
       break;
     }
   }
@@ -173,7 +184,7 @@ void ExampleWindow::read_input_file(std::string filename)
       std::istringstream iss(line);
       std::string a;
 
-      if (!(iss >> a)) { break; } // error
+      if (!(iss >> a)) { break; }
 
       std::string tmp = m_TextLabel.get_text();
       this->change_label_text(tmp + "\n" + a);

@@ -7,9 +7,5 @@ int main (int argc, char *argv[])
 
   ExampleWindow helloworld;
 
-  std::string text = "My text.";
-
-  helloworld.change_buffer_text(text);
-
   return app->run(helloworld);
 }
