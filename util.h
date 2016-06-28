@@ -7,7 +7,7 @@ class ExampleWindow : public Gtk::Window
 public:
   ExampleWindow();
   virtual ~ExampleWindow();
-  void change_buffer_text(const char*);
+  void change_buffer_text(std::string);
 
 protected:
 
@@ -16,6 +16,7 @@ protected:
   void on_button_quit();
   void on_button_buffer1();
   void on_button_buffer2();
+  void on_button_file_clicked();
 
   Gtk::Box m_VBox;
 
@@ -26,5 +27,5 @@ protected:
 
   Gtk::ButtonBox m_ButtonBox;
   Gtk::Button m_Button_Quit, m_Button_Buffer1, m_Button_Buffer2,
-    m_Button_File, m_Button_Folder;
+    m_Button_File;
 };

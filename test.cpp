@@ -7,7 +7,7 @@ int main (int argc, char *argv[])
 
   ExampleWindow helloworld;
 
-  const char* text = "My text.";
+  std::string text = "My text.";
 
   helloworld.change_buffer_text(text);
 
