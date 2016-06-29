@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-Wall -g
 
-default: program
+default: debug
 
-program: util.cpp working.cpp main.cpp
+debug: util.cpp working.cpp main.cpp
 	g++ -o main util.cpp working.cpp main.cpp `pkg-config gtkmm-3.0 --cflags --libs` $(CFLAGS)
