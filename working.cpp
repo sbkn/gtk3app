@@ -47,7 +47,7 @@ bool ExampleWorker::has_stopped() const
   return m_has_stopped;
 }
 
-void ExampleWorker::do_work(ExampleWindow* caller)
+void ExampleWorker::do_work(ExampleWindow* caller, std::vector<std::string> id_vec)
 {
   {
     std::lock_guard<std::mutex> lock(m_Mutex);
@@ -57,8 +57,9 @@ void ExampleWorker::do_work(ExampleWindow* caller)
   } // The mutex is unlocked here by lock's destructor.
 
   // Simulate a long calculation.
-  for (int i = 0; i < 3; ++i) // do until break
+  for (uint i = 0; i < id_vec.size(); ++i) // do until break
   {
+    std::cout << this->build_cmd_params(i, &id_vec) << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
     {
@@ -111,8 +112,11 @@ void ExampleWorker::do_work(ExampleWindow* caller)
 
 
 
-
-
-
   caller->notify();
+}
+
+std::string ExampleWorker::build_cmd_params(int index_in_array, std::vector<std::string> *id_vec)
+{
+  std::string tmp = "aws lambda invoke " + (*id_vec)[index_in_array] + " do some work";
+  return tmp;
 }

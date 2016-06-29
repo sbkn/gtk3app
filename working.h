@@ -12,7 +12,7 @@ public:
   ExampleWorker();
 
   // Thread function.
-  void do_work(ExampleWindow* caller);
+  void do_work(ExampleWindow* caller, std::vector<std::string> id_vec);
 
   void get_data(double* fraction_done, Glib::ustring* message) const;
   void stop_work();
@@ -27,4 +27,8 @@ private:
   bool m_has_stopped;
   double m_fraction_done;
   Glib::ustring m_message;
+
+protected:
+  std::string build_cmd_params(int, std::vector<std::string> *);
+
 };

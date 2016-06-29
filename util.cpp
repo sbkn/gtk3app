@@ -104,10 +104,9 @@ void ExampleWindow::on_button_run()
     m_WorkerThread = new std::thread(
       [this]
       {
-        m_Worker.do_work(this);
+        m_Worker.do_work(this, id_vector);
       });
-  }
-
+    }
   // UPDATE START BUTTON HERE, MAKE IT CANCEL OR SOMETHING ..
   // CHECK: https://developer.gnome.org/gtkmm-tutorial/stable/sec-multithread-example.html.en
 }
@@ -175,8 +174,6 @@ void ExampleWindow::on_button_file_clicked()
   {
     case(Gtk::RESPONSE_OK):
     {
-      std::cout << "Open clicked." << std::endl;
-
       //Notice that this is a std::string, not a Glib::ustring.
       std::string filename = dialog.get_filename();
 
@@ -210,17 +207,18 @@ void ExampleWindow::read_input_file(std::string filename)
       std::string a;
 
       if (!(iss >> a)) { break; }
-
+      id_vector.push_back(a);
       std::string tmp = m_TextLabel.get_text();
       this->change_label_text(tmp + "\n" + a);
   }
+  std::cout << "Read in " << id_vector.size() << " IDs." << std::endl;
 }
 
 void ExampleWindow::update_start_stop_buttons()
 {
   const bool thread_is_running = m_WorkerThread != nullptr;
 
-  m_Button_Run.set_sensitive(!thread_is_running);
+  m_Button_Run.set_sensitive(thread_is_running);
 }
 
 // notify() is called from ExampleWorker::do_work(). It is executed in the worker

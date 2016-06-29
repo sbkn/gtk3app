@@ -28,6 +28,8 @@ protected:
   void change_label_text(std::string);
   void remove_label_text();
 
+  std::vector<std::string> id_vector;
+
   Gtk::Box m_VBox, m_HBox;
 
   Gtk::ScrolledWindow m_ScrolledWindow_Label;
