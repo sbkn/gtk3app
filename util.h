@@ -1,12 +1,18 @@
 #pragma once
 
 #include <gtkmm.h>
+#include "working.h"
 
 class ExampleWindow : public Gtk::Window
 {
 public:
   ExampleWindow();
   virtual ~ExampleWindow();
+  void notify();
+
+private:
+  void on_notification_from_worker_thread();
+  void update_start_stop_buttons();
 
 protected:
 
@@ -34,4 +40,8 @@ protected:
   Gtk::ButtonBox m_HButtonBox, m_ButtonBox;
   Gtk::Button m_Button_Quit, m_Button_Run, m_Button_Buffer1,
     m_Button_Buffer2, m_Button_File;
+
+  Glib::Dispatcher m_Dispatcher;
+  ExampleWorker m_Worker;
+  std::thread* m_WorkerThread;
 };

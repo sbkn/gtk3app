@@ -12,9 +12,11 @@ ExampleWindow::ExampleWindow()
   m_Button_Quit("_Quit", true),
   m_Button_Run("Run"),
   m_Button_Buffer1("Use buffer 1"),
-  m_Button_File("Choose a File")
+  m_Button_File("Choose a File"),
+  m_Dispatcher(),
+  m_WorkerThread(nullptr)
 {
-  set_title("Idleon");
+  set_title("Invoker");
   set_border_width(5);
   set_default_size(1000, 600);
   this->set_icon_from_file("icon.png");
@@ -57,6 +59,8 @@ ExampleWindow::ExampleWindow()
               &ExampleWindow::on_button_run) );
   m_Button_Buffer1.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_buffer1) );
+  // Connect the handler to the dispatcher.
+  m_Dispatcher.connect(sigc::mem_fun(*this, &ExampleWindow::on_notification_from_worker_thread));
 
   fill_buffers();
   on_button_buffer1();
@@ -76,6 +80,13 @@ ExampleWindow::~ExampleWindow()
 
 void ExampleWindow::on_button_quit()
 {
+  if (m_WorkerThread)
+  {
+    // Order the worker thread to stop and wait for it to stop.
+    m_Worker.stop_work();
+    if (m_WorkerThread->joinable())
+      m_WorkerThread->join();
+  }
   hide();
 }
 
@@ -83,7 +94,21 @@ void ExampleWindow::on_button_run()
 {
   std::cout << "RUNNING IT!" << std::endl;
 
-  // DO SOMETHING AWESOME HERE!
+  if (m_WorkerThread)
+  {
+    std::cout << "Can't start a worker thread while another one is running." << std::endl;
+  }
+  else
+  {
+    // Start a new worker thread.
+    m_WorkerThread = new std::thread(
+      [this]
+      {
+        m_Worker.do_work(this);
+      });
+  }
+
+  // UPDATE START BUTTON HERE, MAKE IT CANCEL OR SOMETHING ..
   // CHECK: https://developer.gnome.org/gtkmm-tutorial/stable/sec-multithread-example.html.en
 }
 
@@ -189,4 +214,34 @@ void ExampleWindow::read_input_file(std::string filename)
       std::string tmp = m_TextLabel.get_text();
       this->change_label_text(tmp + "\n" + a);
   }
+}
+
+void ExampleWindow::update_start_stop_buttons()
+{
+  const bool thread_is_running = m_WorkerThread != nullptr;
+
+  m_Button_Run.set_sensitive(!thread_is_running);
+}
+
+// notify() is called from ExampleWorker::do_work(). It is executed in the worker
+// thread. It triggers a call to on_notification_from_worker_thread(), which is
+// executed in the GUI thread.
+void ExampleWindow::notify()
+{
+  m_Dispatcher.emit();
+}
+
+void ExampleWindow::on_notification_from_worker_thread()
+{
+  if (m_WorkerThread && m_Worker.has_stopped())
+  {
+    // Work is done.
+    if (m_WorkerThread->joinable())
+      m_WorkerThread->join();
+    delete m_WorkerThread;
+    m_WorkerThread = nullptr;
+    std::cout << "stopping worker" << std::endl;
+    update_start_stop_buttons();
+  }
+  //update_widgets();
 }
