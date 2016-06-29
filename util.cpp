@@ -220,6 +220,7 @@ void ExampleWindow::update_start_stop_buttons()
   const bool thread_is_running = m_WorkerThread != nullptr;
 
   m_Button_Run.set_sensitive(!thread_is_running);
+  m_TextView.set_editable(!thread_is_running);
 }
 
 // notify() is called from ExampleWorker::do_work(). It is executed in the worker
