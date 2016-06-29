@@ -2,6 +2,9 @@
 
 ##Compiling
 
+Run `make && ./invoker`.
+
+
 Needs *gtkmm-3.0* to compile.
 
 ###MacOS:
