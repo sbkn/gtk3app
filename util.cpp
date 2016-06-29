@@ -59,8 +59,9 @@ ExampleWindow::ExampleWindow()
               &ExampleWindow::on_button_run) );
   m_Button_Buffer1.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_buffer1) );
-  // Connect the handler to the dispatcher.
-  m_Dispatcher.connect(sigc::mem_fun(*this, &ExampleWindow::on_notification_from_worker_thread));
+  m_Dispatcher.connect(
+    sigc::mem_fun(*this, &ExampleWindow::on_notification_from_worker_thread)
+  );
 
   fill_buffers();
   on_button_buffer1();
@@ -107,8 +108,8 @@ void ExampleWindow::on_button_run()
         m_Worker.do_work(this, id_vector);
       });
     }
-  // UPDATE START BUTTON HERE, MAKE IT CANCEL OR SOMETHING ..
   // CHECK: https://developer.gnome.org/gtkmm-tutorial/stable/sec-multithread-example.html.en
+  update_start_stop_buttons();
 }
 
 void ExampleWindow::on_button_buffer1()
@@ -218,7 +219,7 @@ void ExampleWindow::update_start_stop_buttons()
 {
   const bool thread_is_running = m_WorkerThread != nullptr;
 
-  m_Button_Run.set_sensitive(thread_is_running);
+  m_Button_Run.set_sensitive(!thread_is_running);
 }
 
 // notify() is called from ExampleWorker::do_work(). It is executed in the worker
