@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <memory>
 #include <stdexcept>
+#include <string>
 
 
 
@@ -59,7 +60,8 @@ void ExampleWorker::do_work(ExampleWindow* caller, std::vector<std::string> id_v
   // Simulate a long calculation.
   for (uint i = 0; i < id_vec.size(); ++i) // do until break
   {
-    std::cout << this->build_cmd_params(i, &id_vec) << std::endl;
+    std::string cmd = this->build_cmd_params(i, &id_vec);
+
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
     {
@@ -86,6 +88,24 @@ void ExampleWorker::do_work(ExampleWindow* caller, std::vector<std::string> id_v
       }
     }
 
+
+
+      // CALL THE CLI HERE
+      std::cout << cmd.c_str() << std::endl;
+      char buffer[128];
+      std::string result = "";
+      std::shared_ptr<FILE> pipe(popen(cmd.c_str(), "r"), pclose);
+      if (!pipe) throw std::runtime_error("popen() failed!");
+      while (!feof(pipe.get())) {
+          if (fgets(buffer, 128, pipe.get()) != NULL)
+              result += buffer;
+      }
+      std::cout << result << std::endl;
+
+
+
+
+
     caller->notify();
   }
 
@@ -95,28 +115,21 @@ void ExampleWorker::do_work(ExampleWindow* caller, std::vector<std::string> id_v
     m_has_stopped = true;
   }
 
-
-
-  // CALL THE CLI HERE
-  const char* cmd = "aws s3 ls";
-  char buffer[128];
-  std::string result = "";
-  std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
-  if (!pipe) throw std::runtime_error("popen() failed!");
-  while (!feof(pipe.get())) {
-      if (fgets(buffer, 128, pipe.get()) != NULL)
-          result += buffer;
-  }
-  std::cout << result << std::endl;
-
-
-
-
   caller->notify();
 }
 
 std::string ExampleWorker::build_cmd_params(int index_in_array, std::vector<std::string> *id_vec)
 {
-  std::string tmp = "aws lambda invoke " + (*id_vec)[index_in_array] + " do some work";
-  return tmp;
+  std::string payload = "{\\\"dmks_id\\\":\\\"" +
+    (*id_vec)[index_in_array] +
+    "\\\",\\\"ApplicationResponse\\\":{\\\"Type\\\":\\\"whatever\\\",\\\"ApplicationId\\\": \\\"absNr\\\",\\\"Status\\\": \\\"whatever2\\\"},\\\"sendSummaryPdf\\\": true}";
+
+  std::string cmd = std::string("aws lambda invoke") + std::string(" --invocation-type RequestResponse") +
+  std::string(" --function-name vwfs-dmks-euw1-lambda-pias:test") +
+  std::string(" --region eu-west-1") +
+	std::string(" --log-type Tail") +
+	std::string(" --payload \"") + std::string(payload) + "\"" +
+	std::string(" outputfile.txt");
+
+  return cmd;
 }
