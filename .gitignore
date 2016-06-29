@@ -1,3 +1,4 @@
 main
 *.gch
 outputfile_*.txt
+.DS_Store
