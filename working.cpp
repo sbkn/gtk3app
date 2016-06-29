@@ -2,6 +2,15 @@
 #include "working.h"
 #include <sstream>
 #include <chrono>
+#include <iostream>
+#include <string>
+
+// FOR CMD SPAWNING
+#include <cstdio>
+#include <memory>
+#include <stdexcept>
+
+
 
 ExampleWorker::ExampleWorker() :
   m_Mutex(),
@@ -84,6 +93,26 @@ void ExampleWorker::do_work(ExampleWindow* caller)
     m_shall_stop = false;
     m_has_stopped = true;
   }
+
+
+
+  // CALL THE CLI HERE
+  const char* cmd = "aws s3 ls";
+  char buffer[128];
+  std::string result = "";
+  std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+  if (!pipe) throw std::runtime_error("popen() failed!");
+  while (!feof(pipe.get())) {
+      if (fgets(buffer, 128, pipe.get()) != NULL)
+          result += buffer;
+  }
+  std::cout << result << std::endl;
+
+
+
+
+
+
 
   caller->notify();
 }
