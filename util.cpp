@@ -11,8 +11,8 @@ ExampleWindow::ExampleWindow()
   m_ButtonBox(Gtk::ORIENTATION_VERTICAL),
   m_Button_Quit("_Quit", true),
   m_Button_Run("Run"),
-  m_Button_Buffer1("Use buffer 1"),
-  m_Button_File("Choose a File"),
+  m_Button_SavePayload("Save payload"),
+  m_Button_IdFilePicker("Load IDs"),
   m_Dispatcher(),
   m_WorkerThread(nullptr)
 {
@@ -39,8 +39,8 @@ ExampleWindow::ExampleWindow()
   //Add buttons:
   m_VBox.pack_start(m_ButtonBox, Gtk::PACK_SHRINK);
 
-  m_ButtonBox.pack_start(m_Button_File, Gtk::PACK_SHRINK);
-  m_ButtonBox.pack_start(m_Button_Buffer1, Gtk::PACK_SHRINK);
+  m_ButtonBox.pack_start(m_Button_IdFilePicker, Gtk::PACK_SHRINK);
+  m_ButtonBox.pack_start(m_Button_SavePayload, Gtk::PACK_SHRINK);
   m_HButtonBox.pack_start(m_Button_Quit, Gtk::PACK_EXPAND_PADDING);
   m_HButtonBox.pack_start(m_Button_Run, Gtk::PACK_EXPAND_PADDING);
   m_HButtonBox.set_layout(Gtk::BUTTONBOX_EDGE);
@@ -51,20 +51,20 @@ ExampleWindow::ExampleWindow()
   m_ButtonBox.set_layout(Gtk::BUTTONBOX_END);
 
   //Connect signals:
-  m_Button_File.signal_clicked().connect(sigc::mem_fun(*this,
+  m_Button_IdFilePicker.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_file_clicked) );
   m_Button_Quit.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_quit) );
   m_Button_Run.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_run) );
-  m_Button_Buffer1.signal_clicked().connect(sigc::mem_fun(*this,
-              &ExampleWindow::on_button_buffer1) );
+  m_Button_SavePayload.signal_clicked().connect(sigc::mem_fun(*this,
+              &ExampleWindow::on_button_savePayload) );
   m_Dispatcher.connect(
     sigc::mem_fun(*this, &ExampleWindow::on_notification_from_worker_thread)
   );
 
   fill_buffers();
-  on_button_buffer1();
+  on_button_savePayload();
 
   show_all_children();
 }
@@ -112,7 +112,7 @@ void ExampleWindow::on_button_run()
   update_start_stop_buttons();
 }
 
-void ExampleWindow::on_button_buffer1()
+void ExampleWindow::on_button_savePayload()
 {
   m_TextView.set_buffer(m_refTextBuffer1);
 }
