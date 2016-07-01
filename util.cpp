@@ -154,6 +154,7 @@ void ExampleWindow::clear_text_view()
   m_TextView.set_buffer(tmp);
 }
 
+
 /**
   * FILEPICKER IDS
   */
@@ -275,6 +276,7 @@ void ExampleWindow::read_id_file(std::string filename)
   std::ifstream infile(filename);
   std::string line;
 
+  id_vector.clear();
   this->remove_label_text();
 
   while (std::getline(infile, line))
@@ -295,6 +297,7 @@ void ExampleWindow::read_payload_file(std::string filename)
   std::ifstream infile(filename);
   std::string line;
 
+  id_vector.clear();
   this->clear_text_view();
 
   while (std::getline(infile, line))
