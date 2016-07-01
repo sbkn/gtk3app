@@ -23,7 +23,8 @@ protected:
   void on_button_loadPayload();
   void on_button_savePayload();
   void on_button_buffer2();
-  void on_button_id_file_clicked(void (*read_file_fp)(std::string));
+  void on_button_id_file_clicked();
+  void on_button_payload_file_clicked();
   void read_id_file(std::string);
   void read_payload_file(std::string);
   void change_label_text(std::string);

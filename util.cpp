@@ -54,13 +54,13 @@ ExampleWindow::ExampleWindow()
 
   //Connect signals:
   m_Button_IdFilePicker.signal_clicked().connect(sigc::mem_fun(*this,
-              &ExampleWindow::on_button_id_file_clicked(this->read_id_file)) );
+              &ExampleWindow::on_button_id_file_clicked) );
   m_Button_Quit.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_quit) );
   m_Button_Run.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_run) );
   m_Button_LoadPayload.signal_clicked().connect(sigc::mem_fun(*this,
-              &ExampleWindow::on_button_loadPayload(this->read_payload_file)) );
+              &ExampleWindow::on_button_payload_file_clicked) );
   m_Button_SavePayload.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_savePayload) );
   m_Dispatcher.connect(
@@ -76,7 +76,7 @@ ExampleWindow::ExampleWindow()
 void ExampleWindow::fill_buffers()
 {
   m_refTextBuffer1 = Gtk::TextBuffer::create();
-  m_refTextBuffer1->set_text("This is the text from TextBuffer #1.");
+  m_refTextBuffer1->set_text("{\"name\": \"lambda\"}");
 }
 
 ExampleWindow::~ExampleWindow()
@@ -133,7 +133,7 @@ void ExampleWindow::change_label_text(std::string text)
 
 void ExampleWindow::remove_label_text()
 {
-  std::string tmp = " ";
+  std::string tmp = "";
   m_TextLabel.set_text(tmp);
 }
 
@@ -149,15 +149,15 @@ void ExampleWindow::set_text_view_text(std::string text)
 void ExampleWindow::clear_text_view()
 {
   Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
-  tmp->set_text(" ");
+  tmp->set_text("");
 
   m_TextView.set_buffer(tmp);
 }
 
 /**
-  * FILEPICKER
+  * FILEPICKER IDS
   */
-void ExampleWindow::on_button_id_file_clicked(void (*read_file_fp)(std::string))
+void ExampleWindow::on_button_id_file_clicked()
 {
   Gtk::FileChooserDialog dialog("Choose a file with IDs",
           Gtk::FILE_CHOOSER_ACTION_OPEN);
@@ -195,7 +195,7 @@ void ExampleWindow::on_button_id_file_clicked(void (*read_file_fp)(std::string))
       //Notice that this is a std::string, not a Glib::ustring.
       std::string filename = dialog.get_filename();
 
-      read_file_fp(filename);
+      this->read_id_file(filename);
       break;
     }
     case(Gtk::RESPONSE_CANCEL):
@@ -208,6 +208,64 @@ void ExampleWindow::on_button_id_file_clicked(void (*read_file_fp)(std::string))
     }
   }
 }
+
+
+/**
+  * FILEPICKER PAYLOAD
+  */
+void ExampleWindow::on_button_payload_file_clicked()
+{
+  Gtk::FileChooserDialog dialog("Choose a file with a payload",
+          Gtk::FILE_CHOOSER_ACTION_OPEN);
+  dialog.set_transient_for(*this);
+
+  //Add response buttons the the dialog:
+  dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+  dialog.add_button("_Open", Gtk::RESPONSE_OK);
+
+  //Add filters, so that only certain file types can be selected:
+
+  auto filter_csv = Gtk::FileFilter::create();
+  filter_csv->set_name("JSON files");
+  filter_csv->add_mime_type("application/json");
+  filter_csv->add_mime_type("*.json");
+  dialog.add_filter(filter_csv);
+
+  auto filter_text = Gtk::FileFilter::create();
+  filter_text->set_name("Text files");
+  filter_text->add_mime_type("text/plain");
+  dialog.add_filter(filter_text);
+
+  auto filter_any = Gtk::FileFilter::create();
+  filter_any->set_name("Any files");
+  filter_any->add_pattern("*");
+  dialog.add_filter(filter_any);
+
+  int result = dialog.run();
+
+  //Handle the response:
+  switch(result)
+  {
+    case(Gtk::RESPONSE_OK):
+    {
+      //Notice that this is a std::string, not a Glib::ustring.
+      std::string filename = dialog.get_filename();
+
+      this->read_payload_file(filename);
+      break;
+    }
+    case(Gtk::RESPONSE_CANCEL):
+    {
+      break;
+    }
+    default:
+    {
+      break;
+    }
+  }
+}
+
+
 
 /**
   * FILE READING AND STUFF
