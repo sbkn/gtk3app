@@ -11,6 +11,7 @@ ExampleWindow::ExampleWindow()
   m_ButtonBox(Gtk::ORIENTATION_VERTICAL),
   m_Button_Quit("_Quit", true),
   m_Button_Run("Run"),
+  m_Button_LoadPayload("Load payload"),
   m_Button_SavePayload("Save payload"),
   m_Button_IdFilePicker("Load IDs"),
   m_Dispatcher(),
@@ -41,6 +42,7 @@ ExampleWindow::ExampleWindow()
 
   m_ButtonBox.pack_start(m_Button_IdFilePicker, Gtk::PACK_SHRINK);
   m_ButtonBox.pack_start(m_Button_SavePayload, Gtk::PACK_SHRINK);
+  m_ButtonBox.pack_start(m_Button_LoadPayload, Gtk::PACK_SHRINK);
   m_HButtonBox.pack_start(m_Button_Quit, Gtk::PACK_EXPAND_PADDING);
   m_HButtonBox.pack_start(m_Button_Run, Gtk::PACK_EXPAND_PADDING);
   m_HButtonBox.set_layout(Gtk::BUTTONBOX_EDGE);
@@ -52,11 +54,13 @@ ExampleWindow::ExampleWindow()
 
   //Connect signals:
   m_Button_IdFilePicker.signal_clicked().connect(sigc::mem_fun(*this,
-              &ExampleWindow::on_button_file_clicked) );
+              &ExampleWindow::on_button_id_file_clicked(this->read_id_file)) );
   m_Button_Quit.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_quit) );
   m_Button_Run.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_run) );
+  m_Button_LoadPayload.signal_clicked().connect(sigc::mem_fun(*this,
+              &ExampleWindow::on_button_loadPayload(this->read_payload_file)) );
   m_Button_SavePayload.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_savePayload) );
   m_Dispatcher.connect(
@@ -117,13 +121,9 @@ void ExampleWindow::on_button_savePayload()
   m_TextView.set_buffer(m_refTextBuffer1);
 }
 
-void ExampleWindow::change_buffer_text(std::string text)
+void ExampleWindow::on_button_loadPayload()
 {
-
-  Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
-  tmp->set_text(text);
-
-  m_TextView.set_buffer(tmp);
+  m_TextView.set_buffer(m_refTextBuffer1);
 }
 
 void ExampleWindow::change_label_text(std::string text)
@@ -137,10 +137,27 @@ void ExampleWindow::remove_label_text()
   m_TextLabel.set_text(tmp);
 }
 
+void ExampleWindow::set_text_view_text(std::string text)
+{
+  Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
+  tmp->set_text(text);
+
+  m_TextView.set_buffer(tmp);
+}
+
+
+void ExampleWindow::clear_text_view()
+{
+  Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
+  tmp->set_text(" ");
+
+  m_TextView.set_buffer(tmp);
+}
+
 /**
   * FILEPICKER
   */
-void ExampleWindow::on_button_file_clicked()
+void ExampleWindow::on_button_id_file_clicked(void (*read_file_fp)(std::string))
 {
   Gtk::FileChooserDialog dialog("Choose a file with IDs",
           Gtk::FILE_CHOOSER_ACTION_OPEN);
@@ -178,7 +195,7 @@ void ExampleWindow::on_button_file_clicked()
       //Notice that this is a std::string, not a Glib::ustring.
       std::string filename = dialog.get_filename();
 
-      this->read_input_file(filename);
+      read_file_fp(filename);
       break;
     }
     case(Gtk::RESPONSE_CANCEL):
@@ -195,7 +212,7 @@ void ExampleWindow::on_button_file_clicked()
 /**
   * FILE READING AND STUFF
   */
-void ExampleWindow::read_input_file(std::string filename)
+void ExampleWindow::read_id_file(std::string filename)
 {
   std::ifstream infile(filename);
   std::string line;
@@ -211,6 +228,28 @@ void ExampleWindow::read_input_file(std::string filename)
       id_vector.push_back(a);
       std::string tmp = m_TextLabel.get_text();
       this->change_label_text(tmp + "\n" + a);
+  }
+  std::cout << "Read in " << id_vector.size() << " IDs." << std::endl;
+}
+
+void ExampleWindow::read_payload_file(std::string filename)
+{
+  std::ifstream infile(filename);
+  std::string line;
+
+  this->clear_text_view();
+
+  while (std::getline(infile, line))
+  {
+      std::istringstream iss(line);
+      std::string a;
+
+      if (!(iss >> a)) { break; }
+
+      Glib::RefPtr<Gtk::TextBuffer> m_textbuffer = Gtk::TextBuffer::create();
+      m_textbuffer = m_TextView.get_buffer();
+      std::string tmp = m_textbuffer->get_text();
+      this->set_text_view_text(tmp + "\n" + a);
   }
   std::cout << "Read in " << id_vector.size() << " IDs." << std::endl;
 }

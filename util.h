@@ -20,13 +20,16 @@ protected:
 
   void on_button_quit();
   void on_button_run();
+  void on_button_loadPayload();
   void on_button_savePayload();
   void on_button_buffer2();
-  void on_button_file_clicked();
-  void read_input_file(std::string);
-  void change_buffer_text(std::string);
+  void on_button_id_file_clicked(void (*read_file_fp)(std::string));
+  void read_id_file(std::string);
+  void read_payload_file(std::string);
   void change_label_text(std::string);
   void remove_label_text();
+  void clear_text_view();
+  void set_text_view_text(std::string);
 
   std::vector<std::string> id_vector;
 
@@ -40,8 +43,8 @@ protected:
   Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1, m_refTextBuffer2;
 
   Gtk::ButtonBox m_HButtonBox, m_ButtonBox;
-  Gtk::Button m_Button_Quit, m_Button_Run, m_Button_SavePayload,
-    m_Button_Buffer2, m_Button_IdFilePicker;
+  Gtk::Button m_Button_Quit, m_Button_Run, m_Button_LoadPayload,
+    m_Button_SavePayload, m_Button_Buffer2, m_Button_IdFilePicker;
 
   Glib::Dispatcher m_Dispatcher;
   ExampleWorker m_Worker;
