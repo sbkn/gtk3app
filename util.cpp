@@ -338,7 +338,6 @@ void ExampleWindow::on_notification_from_worker_thread()
     delete m_WorkerThread;
     m_WorkerThread = nullptr;
     std::cout << "stopping worker" << std::endl;
-    update_start_stop_buttons();
   }
-  //update_widgets();
+  update_start_stop_buttons();
 }
