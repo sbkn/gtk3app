@@ -26,29 +26,37 @@ ExampleWindow::ExampleWindow()
 
   add(m_VBox);
   add(m_HBox);
+  add(m_VBox_Ids);
+  add(m_VBox_Payload);
 
-  // ADD TEXTVIEW
+  // ADD IDS LABEL AND TEXTVIEW
+  m_Label_Ids.set_text("IDs:");
   m_ScrolledWindow_Ids.add(m_TextView_Ids);
   m_ScrolledWindow_Ids.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+  m_ScrolledWindow_Ids.set_min_content_height(200);
 
-  // ADD LABEL
+  // ADD PAYLOAD LABEL AND TEXTVIEW
+  m_Label_Payload.set_text("Payload:");
   m_ScrolledWindow_Payload.add(m_TextView_Payload);
   m_ScrolledWindow_Payload.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+  m_ScrolledWindow_Payload.set_min_content_height(200);
 
+  m_VBox_Ids.add(m_Label_Ids);
   m_VBox_Ids.add(m_ScrolledWindow_Ids);
-  m_VBox_Ids.add(m_ScrolledWindow_Payload);
+  m_VBox_Payload.add(m_Label_Payload);
+  m_VBox_Payload.add(m_ScrolledWindow_Payload);
 
   m_HBox.set_spacing(5);
   m_HBox.pack_start(m_VBox_Ids);
-  m_HBox.pack_start(m_VBox_Ids);
+  m_HBox.pack_start(m_VBox_Payload);
   m_VBox.pack_start(m_HBox);
 
   //Add buttons:
   m_VBox.pack_start(m_ButtonBox, Gtk::PACK_SHRINK);
 
   m_ButtonBox.pack_start(m_Button_IdFilePicker, Gtk::PACK_SHRINK);
-  m_ButtonBox.pack_start(m_Button_SavePayload, Gtk::PACK_SHRINK);
   m_ButtonBox.pack_start(m_Button_LoadPayload, Gtk::PACK_SHRINK);
+  m_ButtonBox.pack_start(m_Button_SavePayload, Gtk::PACK_SHRINK);
   m_HButtonBox.pack_start(m_Button_Quit, Gtk::PACK_EXPAND_PADDING);
   m_HButtonBox.pack_start(m_Button_Run, Gtk::PACK_EXPAND_PADDING);
   m_HButtonBox.set_layout(Gtk::BUTTONBOX_EDGE);

@@ -41,6 +41,7 @@ protected:
   Gtk::ScrolledWindow m_ScrolledWindow_Payload;
   Gtk::TextView m_TextView_Payload;
   Gtk::TextView m_TextView_Ids;
+  Gtk::Label m_Label_Ids, m_Label_Payload;
 
   Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1;
 
