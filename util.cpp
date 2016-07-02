@@ -7,6 +7,8 @@
 ExampleWindow::ExampleWindow()
 : m_VBox(Gtk::ORIENTATION_VERTICAL),
   m_HBox(Gtk::ORIENTATION_HORIZONTAL),
+  m_VBox_Ids(Gtk::ORIENTATION_VERTICAL),
+  m_VBox_Payload(Gtk::ORIENTATION_VERTICAL),
   m_HButtonBox(Gtk::ORIENTATION_HORIZONTAL),
   m_ButtonBox(Gtk::ORIENTATION_VERTICAL),
   m_Button_Quit("_Quit", true),
@@ -33,9 +35,12 @@ ExampleWindow::ExampleWindow()
   m_ScrolledWindow_Payload.add(m_TextView_Payload);
   m_ScrolledWindow_Payload.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
+  m_VBox_Ids.add(m_ScrolledWindow_Ids);
+  m_VBox_Ids.add(m_ScrolledWindow_Payload);
+
   m_HBox.set_spacing(5);
-  m_HBox.pack_start(m_ScrolledWindow_Ids);
-  m_HBox.pack_start(m_ScrolledWindow_Payload);
+  m_HBox.pack_start(m_VBox_Ids);
+  m_HBox.pack_start(m_VBox_Ids);
   m_VBox.pack_start(m_HBox);
 
   //Add buttons:
