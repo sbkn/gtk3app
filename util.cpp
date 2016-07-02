@@ -26,15 +26,16 @@ ExampleWindow::ExampleWindow()
   add(m_HBox);
 
   // ADD TEXTVIEW
-  m_ScrolledWindow_Label.add(m_TextLabel);
-  m_ScrolledWindow_Label.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+  m_ScrolledWindow_Ids.add(m_TextView_Ids);
+  m_ScrolledWindow_Ids.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
   // ADD LABEL
-  m_ScrolledWindow.add(m_TextView);
-  m_ScrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+  m_ScrolledWindow_Payload.add(m_TextView_Payload);
+  m_ScrolledWindow_Payload.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-  m_HBox.pack_start(m_ScrolledWindow_Label);
-  m_HBox.pack_start(m_ScrolledWindow);
+  m_HBox.set_spacing(5);
+  m_HBox.pack_start(m_ScrolledWindow_Ids);
+  m_HBox.pack_start(m_ScrolledWindow_Payload);
   m_VBox.pack_start(m_HBox);
 
   //Add buttons:
@@ -118,40 +119,44 @@ void ExampleWindow::on_button_run()
 
 void ExampleWindow::on_button_savePayload()
 {
-  m_TextView.set_buffer(m_refTextBuffer1);
+  m_TextView_Payload.set_buffer(m_refTextBuffer1);
 }
 
 void ExampleWindow::on_button_loadPayload()
 {
-  m_TextView.set_buffer(m_refTextBuffer1);
+  m_TextView_Payload.set_buffer(m_refTextBuffer1);
 }
 
-void ExampleWindow::change_label_text(std::string text)
-{
-  m_TextLabel.set_text(text);
-}
-
-void ExampleWindow::remove_label_text()
-{
-  std::string tmp = "";
-  m_TextLabel.set_text(tmp);
-}
-
-void ExampleWindow::set_text_view_text(std::string text)
+void ExampleWindow::set_ids_text_view_text(std::string text)
 {
   Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
   tmp->set_text(text);
 
-  m_TextView.set_buffer(tmp);
+  m_TextView_Ids.set_buffer(tmp);
 }
 
-
-void ExampleWindow::clear_text_view()
+void ExampleWindow::set_payload_text_view_text(std::string text)
 {
   Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
-  tmp->set_text("");
+  tmp->set_text(text);
 
-  m_TextView.set_buffer(tmp);
+  m_TextView_Payload.set_buffer(tmp);
+}
+
+void ExampleWindow::clear_ids_text_view()
+{
+  Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
+  tmp->erase(tmp->begin(), tmp->end());
+
+  m_TextView_Ids.set_buffer(tmp);
+}
+
+void ExampleWindow::clear_payload_text_view()
+{
+  Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
+  tmp->erase(tmp->begin(), tmp->end());
+
+  m_TextView_Payload.set_buffer(tmp);
 }
 
 
@@ -266,8 +271,6 @@ void ExampleWindow::on_button_payload_file_clicked()
   }
 }
 
-
-
 /**
   * ID FILE READING
   */
@@ -275,9 +278,10 @@ void ExampleWindow::read_id_file(std::string filename)
 {
   std::ifstream infile(filename);
   std::string line;
+  Glib::RefPtr<Gtk::TextBuffer> m_textbuffer = Gtk::TextBuffer::create();
 
   id_vector.clear();
-  this->remove_label_text();
+  this->clear_ids_text_view();
 
   while (std::getline(infile, line))
   {
@@ -286,12 +290,13 @@ void ExampleWindow::read_id_file(std::string filename)
 
       if (!(iss >> a)) { break; }
       id_vector.push_back(a);
-      std::string tmp = m_TextLabel.get_text();
-      this->change_label_text(tmp + "\n" + a);
+
+      m_textbuffer = m_TextView_Ids.get_buffer();
+      std::cout << m_textbuffer << std::endl;
+      this->set_ids_text_view_text(m_textbuffer + "\n" + a);
   }
   std::cout << "Read in " << id_vector.size() << " IDs." << std::endl;
 }
-
 
 /*
  * PAYLOAD FILE READING
@@ -302,15 +307,14 @@ void ExampleWindow::read_payload_file(std::string filename)
   std::string line;
 
   payload_string.clear();
-  this->clear_text_view();
+  this->clear_payload_text_view();
 
   while (std::getline(infile, line))
   {
       payload_string += line + "\n";
   }
-  Glib::RefPtr<Gtk::TextBuffer> m_textbuffer = Gtk::TextBuffer::create();
-  m_textbuffer = m_TextView.get_buffer();
-  this->set_text_view_text(payload_string);
+
+  this->set_payload_text_view_text(payload_string);
 
   std::cout << "Size of payload: " << payload_string.size() << std::endl;
 }
@@ -320,7 +324,7 @@ void ExampleWindow::update_start_stop_buttons()
   const bool thread_is_running = m_WorkerThread != nullptr;
 
   m_Button_Run.set_sensitive(!thread_is_running);
-  m_TextView.set_editable(!thread_is_running);
+  m_TextView_Payload.set_editable(!thread_is_running);
 }
 
 // notify() is called from ExampleWorker::do_work(). It is executed in the worker

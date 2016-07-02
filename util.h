@@ -27,22 +27,22 @@ protected:
   void on_button_payload_file_clicked();
   void read_id_file(std::string);
   void read_payload_file(std::string);
-  void change_label_text(std::string);
-  void remove_label_text();
-  void clear_text_view();
-  void set_text_view_text(std::string);
+  void set_ids_text_view_text(std::string);
+  void clear_payload_text_view();
+  void clear_ids_text_view();
+  void set_payload_text_view_text(std::string);
 
   std::vector<std::string> id_vector;
   std::string payload_string;
 
   Gtk::Box m_VBox, m_HBox;
 
-  Gtk::ScrolledWindow m_ScrolledWindow_Label;
-  Gtk::ScrolledWindow m_ScrolledWindow;
-  Gtk::TextView m_TextView;
-  Gtk::Label m_TextLabel;
+  Gtk::ScrolledWindow m_ScrolledWindow_Ids;
+  Gtk::ScrolledWindow m_ScrolledWindow_Payload;
+  Gtk::TextView m_TextView_Payload;
+  Gtk::TextView m_TextView_Ids;
 
-  Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1, m_refTextBuffer2;
+  Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1;
 
   Gtk::ButtonBox m_HButtonBox, m_ButtonBox;
   Gtk::Button m_Button_Quit, m_Button_Run, m_Button_LoadPayload,
