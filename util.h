@@ -33,6 +33,7 @@ protected:
   void set_text_view_text(std::string);
 
   std::vector<std::string> id_vector;
+  std::string payload_string;
 
   Gtk::Box m_VBox, m_HBox;
 

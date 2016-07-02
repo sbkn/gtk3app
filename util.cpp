@@ -269,7 +269,7 @@ void ExampleWindow::on_button_payload_file_clicked()
 
 
 /**
-  * FILE READING AND STUFF
+  * ID FILE READING
   */
 void ExampleWindow::read_id_file(std::string filename)
 {
@@ -292,27 +292,27 @@ void ExampleWindow::read_id_file(std::string filename)
   std::cout << "Read in " << id_vector.size() << " IDs." << std::endl;
 }
 
+
+/*
+ * PAYLOAD FILE READING
+ */
 void ExampleWindow::read_payload_file(std::string filename)
 {
   std::ifstream infile(filename);
   std::string line;
 
-  id_vector.clear();
+  payload_string.clear();
   this->clear_text_view();
 
   while (std::getline(infile, line))
   {
-      std::istringstream iss(line);
-      std::string a;
-
-      if (!(iss >> a)) { break; }
-
-      Glib::RefPtr<Gtk::TextBuffer> m_textbuffer = Gtk::TextBuffer::create();
-      m_textbuffer = m_TextView.get_buffer();
-      std::string tmp = m_textbuffer->get_text();
-      this->set_text_view_text(tmp + "\n" + a);
+      payload_string += line + "\n";
   }
-  std::cout << "Read in " << id_vector.size() << " IDs." << std::endl;
+  Glib::RefPtr<Gtk::TextBuffer> m_textbuffer = Gtk::TextBuffer::create();
+  m_textbuffer = m_TextView.get_buffer();
+  this->set_text_view_text(payload_string);
+
+  std::cout << "Size of payload: " << payload_string.size() << std::endl;
 }
 
 void ExampleWindow::update_start_stop_buttons()

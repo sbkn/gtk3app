@@ -1,0 +1,7 @@
+{
+  "name": "lambda",
+  "options": {
+    "runtime": 60,
+    "retry": false
+  }
+}
