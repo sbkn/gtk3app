@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-// FOR CMD SPAWNING
+// FOR PROCESS SPAWNING
 #include <cstdio>
 #include <memory>
 #include <stdexcept>
@@ -48,7 +48,11 @@ bool ExampleWorker::has_stopped() const
   return m_has_stopped;
 }
 
-void ExampleWorker::do_work(ExampleWindow* caller, std::vector<std::string> id_vec)
+void ExampleWorker::do_work(
+  ExampleWindow* caller,
+  std::vector<std::string> id_vec,
+  std::string payload_string
+)
 {
   {
     std::lock_guard<std::mutex> lock(m_Mutex);
@@ -57,10 +61,10 @@ void ExampleWorker::do_work(ExampleWindow* caller, std::vector<std::string> id_v
     m_message = "";
   } // The mutex is unlocked here by lock's destructor.
 
-  // Simulate a long calculation.
+  // Simulate a long calculation. REMOVE IT
   for (uint i = 0; i < id_vec.size(); ++i) // do until break
   {
-    std::string cmd = this->build_cmd_params(i, &id_vec);
+    std::string cmd = this->build_cmd_params(i, &id_vec, &payload_string);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
@@ -118,14 +122,20 @@ void ExampleWorker::do_work(ExampleWindow* caller, std::vector<std::string> id_v
   caller->notify();
 }
 
-std::string ExampleWorker::build_cmd_params(int index_in_array, std::vector<std::string> *id_vec)
+std::string ExampleWorker::build_cmd_params(
+  int index_in_array,
+  std::vector<std::string> *id_vec,
+  std::string *payload_string
+)
 {
-  std::string payload = "{\\\"dmks_id\\\":\\\"" +
-    (*id_vec)[index_in_array] +
-    "\\\",\\\"ApplicationResponse\\\":{\\\"Type\\\":\\\"whatever\\\",\\\"ApplicationId\\\": \\\"absNr\\\",\\\"Status\\\": \\\"whatever2\\\"},\\\"sendSummaryPdf\\\": true}";
+  std::string payload = (*payload_string) + (*id_vec)[index_in_array];
+  payload.erase(
+    std::remove(payload.begin(), payload.end(), '\n'), payload.end()
+  );
 
   //TODO: USE DryRun as invocation-type to simulate a run
-  std::string cmd = std::string("aws lambda invoke") + std::string(" --invocation-type RequestResponse") +
+  std::string cmd = std::string("aws lambda invoke") +
+  std::string(" --invocation-type RequestResponse") +
   std::string(" --function-name vwfs-dmks-euw1-lambda-pias:test") +
   std::string(" --region eu-west-1") +
 	std::string(" --log-type Tail") +

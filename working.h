@@ -12,7 +12,11 @@ public:
   ExampleWorker();
 
   // Thread function.
-  void do_work(ExampleWindow* caller, std::vector<std::string> id_vec);
+  void do_work(
+    ExampleWindow* caller,
+    std::vector<std::string> id_vec,
+    std::string payload_string
+  );
 
   void get_data(double* fraction_done, Glib::ustring* message) const;
   void stop_work();
@@ -29,6 +33,6 @@ private:
   Glib::ustring m_message;
 
 protected:
-  std::string build_cmd_params(int, std::vector<std::string> *);
+  std::string build_cmd_params(int, std::vector<std::string> *, std::string *);
 
 };

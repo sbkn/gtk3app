@@ -89,6 +89,7 @@ ExampleWindow::ExampleWindow()
   show_all_children();
 }
 
+
 void ExampleWindow::fill_buffers()
 {
   m_refTextBuffer1 = Gtk::TextBuffer::create();
@@ -117,7 +118,7 @@ void ExampleWindow::on_button_run()
 
   if (m_WorkerThread)
   {
-    std::cout << "Can't start a worker thread while another one is running." << std::endl;
+    std::cout << "Worker thread already running." << std::endl;
   }
   else
   {
@@ -125,7 +126,7 @@ void ExampleWindow::on_button_run()
     m_WorkerThread = new std::thread(
       [this]
       {
-        m_Worker.do_work(this, id_vector);
+        m_Worker.do_work(this, id_vector, payload_string);
       });
     }
   // CHECK: https://developer.gnome.org/gtkmm-tutorial/stable/sec-multithread-example.html.en
@@ -286,6 +287,7 @@ void ExampleWindow::on_button_payload_file_clicked()
   }
 }
 
+
 /**
   * ID FILE READING
   */
@@ -313,6 +315,7 @@ void ExampleWindow::read_id_file(std::string filename)
   std::cout << "Read in " << id_vector.size() << " IDs." << std::endl;
 }
 
+
 /*
  * PAYLOAD FILE READING
  */
@@ -334,6 +337,10 @@ void ExampleWindow::read_payload_file(std::string filename)
   std::cout << "Size of payload: " << payload_string.size() << std::endl;
 }
 
+
+/*
+ * SET BUTTONS ACTIVE / INACTIVE
+ */
 void ExampleWindow::update_start_stop_buttons()
 {
   const bool thread_is_running = m_WorkerThread != nullptr;
@@ -343,6 +350,7 @@ void ExampleWindow::update_start_stop_buttons()
   m_TextView_Payload.set_editable(!thread_is_running);
 }
 
+
 // notify() is called from ExampleWorker::do_work(). It is executed in the worker
 // thread. It triggers a call to on_notification_from_worker_thread(), which is
 // executed in the GUI thread.
@@ -351,6 +359,10 @@ void ExampleWindow::notify()
   m_Dispatcher.emit();
 }
 
+
+/*
+ * FINISH WORKER THREAD HANDLING
+ */
 void ExampleWindow::on_notification_from_worker_thread()
 {
   if (m_WorkerThread && m_Worker.has_stopped())
