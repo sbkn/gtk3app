@@ -34,12 +34,14 @@ ExampleWindow::ExampleWindow()
   m_ScrolledWindow_Ids.add(m_TextView_Ids);
   m_ScrolledWindow_Ids.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
   m_ScrolledWindow_Ids.set_min_content_height(200);
+  m_ScrolledWindow_Ids.set_min_content_width(200);
 
   // ADD PAYLOAD LABEL AND TEXTVIEW
   m_Label_Payload.set_text("Payload:");
   m_ScrolledWindow_Payload.add(m_TextView_Payload);
   m_ScrolledWindow_Payload.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
   m_ScrolledWindow_Payload.set_min_content_height(200);
+  m_ScrolledWindow_Payload.set_min_content_width(200);
 
   m_VBox_Ids.add(m_Label_Ids);
   m_VBox_Ids.add(m_ScrolledWindow_Ids);
@@ -291,6 +293,7 @@ void ExampleWindow::read_id_file(std::string filename)
 {
   std::ifstream infile(filename);
   std::string line;
+  std::string tmp_string;
   Glib::RefPtr<Gtk::TextBuffer> m_textbuffer = Gtk::TextBuffer::create();
 
   id_vector.clear();
@@ -304,10 +307,10 @@ void ExampleWindow::read_id_file(std::string filename)
       if (!(iss >> a)) { break; }
       id_vector.push_back(a);
 
-      m_textbuffer = m_TextView_Ids.get_buffer();
-      std::cout << m_textbuffer << std::endl;
-      this->set_ids_text_view_text(m_textbuffer + "\n" + a);
+      tmp_string += "\n" + a;
+      std::cout << tmp_string << std::endl;
   }
+  this->set_ids_text_view_text(tmp_string);
   std::cout << "Read in " << id_vector.size() << " IDs." << std::endl;
 }
 
@@ -337,6 +340,7 @@ void ExampleWindow::update_start_stop_buttons()
   const bool thread_is_running = m_WorkerThread != nullptr;
 
   m_Button_Run.set_sensitive(!thread_is_running);
+  m_TextView_Ids.set_editable(!thread_is_running);
   m_TextView_Payload.set_editable(!thread_is_running);
 }
 
