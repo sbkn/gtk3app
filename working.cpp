@@ -129,9 +129,8 @@ std::string ExampleWorker::build_cmd_params(
 )
 {
   std::string payload = (*payload_string) + (*id_vec)[index_in_array];
-  payload.erase(
-    std::remove(payload.begin(), payload.end(), '\n'), payload.end()
-  );
+
+  this->finalize_payload(&payload);
 
   //TODO: USE DryRun as invocation-type to simulate a run
   std::string cmd = std::string("aws lambda invoke") +
@@ -144,4 +143,27 @@ std::string ExampleWorker::build_cmd_params(
   std::string(".txt");
 
   return cmd;
+}
+
+void ExampleWorker::finalize_payload(std::string *payload)
+{
+  payload->erase(
+    std::remove(payload->begin(), payload->end(), '\n'), payload->end()
+  );
+  payload->erase(
+    std::remove(payload->begin(), payload->end(), '\t'), payload->end()
+  );
+  payload->erase(
+    std::remove(payload->begin(), payload->end(), ' '), payload->end()
+  );
+
+  size_t index = 0;
+  while (true) {
+     index = payload->find("\"", index);
+     if (index == std::string::npos) break;
+
+     payload->replace(index, 1, "\\\"");
+
+     index += 3;
+   }
 }
