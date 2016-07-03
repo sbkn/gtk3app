@@ -307,8 +307,7 @@ void ExampleWindow::read_id_file(std::string filename)
       if (!(iss >> a)) { break; }
       id_vector.push_back(a);
 
-      tmp_string += "\n" + a;
-      std::cout << tmp_string << std::endl;
+      tmp_string += a + "\n";
   }
   this->set_ids_text_view_text(tmp_string);
   std::cout << "Read in " << id_vector.size() << " IDs." << std::endl;
