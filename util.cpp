@@ -33,14 +33,14 @@ ExampleWindow::ExampleWindow()
   m_Label_Ids.set_text("IDs:");
   m_ScrolledWindow_Ids.add(m_TextView_Ids);
   m_ScrolledWindow_Ids.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-  m_ScrolledWindow_Ids.set_min_content_height(200);
+  m_ScrolledWindow_Ids.set_min_content_height(400);
   m_ScrolledWindow_Ids.set_min_content_width(200);
 
   // ADD PAYLOAD LABEL AND TEXTVIEW
   m_Label_Payload.set_text("Payload:");
   m_ScrolledWindow_Payload.add(m_TextView_Payload);
   m_ScrolledWindow_Payload.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-  m_ScrolledWindow_Payload.set_min_content_height(200);
+  m_ScrolledWindow_Payload.set_min_content_height(400);
   m_ScrolledWindow_Payload.set_min_content_width(200);
 
   m_VBox_Ids.add(m_Label_Ids);

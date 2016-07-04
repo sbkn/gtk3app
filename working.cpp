@@ -128,9 +128,10 @@ std::string ExampleWorker::build_cmd_params(
   std::string *payload_string
 )
 {
-  std::string payload = (*payload_string) + (*id_vec)[index_in_array];
+  std::string payload = (*payload_string);
 
   this->finalize_payload(&payload);
+  this->insert_id_into_payload(&payload, (*id_vec)[index_in_array]);
 
   //TODO: USE DryRun as invocation-type to simulate a run
   std::string cmd = std::string("aws lambda invoke") +
@@ -165,5 +166,23 @@ void ExampleWorker::finalize_payload(std::string *payload)
      payload->replace(index, 1, "\\\"");
 
      index += 3;
+   }
+}
+
+
+/*  REPLACE TEMPLATE STRINGS WITH IDS: */
+void ExampleWorker::insert_id_into_payload(
+  std::string *payload,
+  std::string id
+)
+{
+  size_t index = 0;
+  while (true) {
+     index = payload->find("{{ID}}", index);
+     if (index == std::string::npos) break;
+
+     payload->replace(index, 6, id);
+
+     index += id.length();
    }
 }

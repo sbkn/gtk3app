@@ -21,7 +21,6 @@ protected:
   void on_button_quit();
   void on_button_run();
   void on_button_savePayload();
-  void on_button_buffer2();
   void on_button_id_file_clicked();
   void on_button_payload_file_clicked();
   void read_id_file(std::string);

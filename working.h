@@ -35,4 +35,5 @@ private:
 protected:
   std::string build_cmd_params(int, std::vector<std::string> *, std::string *);
   void finalize_payload(std::string *);
+  void insert_id_into_payload(std::string *, std::string);
 };
