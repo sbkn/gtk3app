@@ -20,7 +20,6 @@ protected:
 
   void on_button_quit();
   void on_button_run();
-  void on_button_loadPayload();
   void on_button_savePayload();
   void on_button_buffer2();
   void on_button_id_file_clicked();
@@ -31,6 +30,8 @@ protected:
   void clear_payload_text_view();
   void clear_ids_text_view();
   void set_payload_text_view_text(std::string);
+  void get_cur_payload();
+  void get_cur_ids();
 
   std::vector<std::string> id_vector;
   std::string payload_string;

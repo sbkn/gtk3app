@@ -115,6 +115,8 @@ void ExampleWindow::on_button_quit()
 void ExampleWindow::on_button_run()
 {
   std::cout << "RUNNING IT!" << std::endl;
+  this->get_cur_payload();
+  this->get_cur_ids();
 
   if (m_WorkerThread)
   {
@@ -138,11 +140,6 @@ void ExampleWindow::on_button_savePayload()
   m_TextView_Payload.set_buffer(m_refTextBuffer1);
 }
 
-void ExampleWindow::on_button_loadPayload()
-{
-  m_TextView_Payload.set_buffer(m_refTextBuffer1);
-}
-
 void ExampleWindow::set_ids_text_view_text(std::string text)
 {
   Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
@@ -161,18 +158,45 @@ void ExampleWindow::set_payload_text_view_text(std::string text)
 
 void ExampleWindow::clear_ids_text_view()
 {
-  Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
+  Glib::RefPtr<Gtk::TextBuffer> tmp = m_TextView_Ids.get_buffer();
   tmp->erase(tmp->begin(), tmp->end());
-
-  m_TextView_Ids.set_buffer(tmp);
 }
 
 void ExampleWindow::clear_payload_text_view()
 {
-  Glib::RefPtr<Gtk::TextBuffer> tmp = Gtk::TextBuffer::create();
+  Glib::RefPtr<Gtk::TextBuffer> tmp = m_TextView_Payload.get_buffer();
   tmp->erase(tmp->begin(), tmp->end());
+}
 
-  m_TextView_Payload.set_buffer(tmp);
+
+/*
+ * GET THE PAYLOAD FROM TEXTVIEW
+ */
+void ExampleWindow::get_cur_payload()
+{
+  Glib::RefPtr<Gtk::TextBuffer> tmp = m_TextView_Payload.get_buffer();
+  std::string tmp_payload(tmp->get_text());
+
+  payload_string = tmp_payload;
+}
+
+
+/*
+ * GET THE IDS FROM TEXTVIEW
+ */
+void ExampleWindow::get_cur_ids()
+{
+  id_vector.clear();
+  Glib::RefPtr<Gtk::TextBuffer> tmp = m_TextView_Ids.get_buffer();
+  std::string tmp_ids(tmp->get_text());
+
+  std::istringstream iss(tmp_ids);
+
+  std::string id;
+  while (std::getline(iss, id))
+  {
+    id_vector.push_back(id);
+  }
 }
 
 
