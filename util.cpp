@@ -15,6 +15,7 @@ ExampleWindow::ExampleWindow()
   m_Button_Run("Run"),
   m_Button_LoadPayload("Load payload"),
   m_Button_SavePayload("Save payload"),
+  m_CheckButton_DryRun("dry run"),
   m_Button_IdFilePicker("Load IDs"),
   m_Dispatcher(),
   m_WorkerThread(nullptr)
@@ -59,8 +60,7 @@ ExampleWindow::ExampleWindow()
   //Add buttons:
   m_VBox.pack_start(m_ButtonBox, Gtk::PACK_SHRINK);
 
-  //m_ButtonBox.pack_start(m_Button_IdFilePicker, Gtk::PACK_SHRINK);
-  //m_ButtonBox.pack_start(m_Button_LoadPayload, Gtk::PACK_SHRINK);
+  m_ButtonBox.pack_start(m_CheckButton_DryRun, Gtk::PACK_SHRINK);
   m_ButtonBox.pack_start(m_Button_SavePayload, Gtk::PACK_SHRINK);
   m_HButtonBox.pack_start(m_Button_Quit, Gtk::PACK_EXPAND_PADDING);
   m_HButtonBox.pack_start(m_Button_Run, Gtk::PACK_EXPAND_PADDING);
@@ -82,11 +82,14 @@ ExampleWindow::ExampleWindow()
               &ExampleWindow::on_button_payload_file_clicked) );
   m_Button_SavePayload.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_savePayload) );
+  m_CheckButton_DryRun.signal_clicked().connect(sigc::mem_fun(*this,
+              &ExampleWindow::on_dryrun_button_clicked) );
   m_Dispatcher.connect(
     sigc::mem_fun(*this, &ExampleWindow::on_notification_from_worker_thread)
   );
 
   fill_buffers();
+  m_CheckButton_DryRun.set_active(true);
   on_button_savePayload();
 
   show_all_children();
@@ -402,4 +405,14 @@ void ExampleWindow::on_notification_from_worker_thread()
     std::cout << "stopping worker" << std::endl;
   }
   update_start_stop_buttons();
+}
+
+/*
+ * HANDLE CHECKBUTTON FOR DRY RUN
+ */
+void ExampleWindow::on_dryrun_button_clicked()
+{
+  std::cout << "The Button was clicked: state="
+      << (m_CheckButton_DryRun.get_active() ? "true" : "false")
+      << std::endl;
 }

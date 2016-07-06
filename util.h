@@ -21,6 +21,7 @@ protected:
   void on_button_quit();
   void on_button_run();
   void on_button_savePayload();
+  void on_dryrun_button_clicked();
   void on_button_id_file_clicked();
   void on_button_payload_file_clicked();
   void read_id_file(std::string);
@@ -48,6 +49,8 @@ protected:
   Gtk::ButtonBox m_HButtonBox, m_ButtonBox;
   Gtk::Button m_Button_Quit, m_Button_Run, m_Button_LoadPayload,
     m_Button_SavePayload, m_Button_Buffer2, m_Button_IdFilePicker;
+
+  Gtk::CheckButton m_CheckButton_DryRun;
 
   Glib::Dispatcher m_Dispatcher;
   ExampleWorker m_Worker;
