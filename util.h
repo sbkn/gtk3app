@@ -47,10 +47,11 @@ protected:
   Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1;
 
   Gtk::ButtonBox m_HButtonBox, m_ButtonBox;
-  Gtk::Button m_Button_Quit, m_Button_Run, m_Button_LoadPayload,
-    m_Button_SavePayload, m_Button_Buffer2, m_Button_IdFilePicker;
 
   Gtk::CheckButton m_CheckButton_DryRun;
+
+  Gtk::Button m_Button_Quit, m_Button_Run, m_Button_LoadPayload,
+    m_Button_SavePayload, m_Button_Buffer2, m_Button_IdFilePicker;
 
   Glib::Dispatcher m_Dispatcher;
   ExampleWorker m_Worker;

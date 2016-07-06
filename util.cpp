@@ -11,11 +11,11 @@ ExampleWindow::ExampleWindow()
   m_VBox_Payload(Gtk::ORIENTATION_VERTICAL),
   m_HButtonBox(Gtk::ORIENTATION_HORIZONTAL),
   m_ButtonBox(Gtk::ORIENTATION_VERTICAL),
+  m_CheckButton_DryRun("Dry run"),
   m_Button_Quit("_Quit", true),
   m_Button_Run("Run"),
   m_Button_LoadPayload("Load payload"),
   m_Button_SavePayload("Save payload"),
-  m_CheckButton_DryRun("dry run"),
   m_Button_IdFilePicker("Load IDs"),
   m_Dispatcher(),
   m_WorkerThread(nullptr)
