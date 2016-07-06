@@ -49,9 +49,8 @@ bool ExampleWorker::has_stopped() const
 }
 
 void ExampleWorker::do_work(
-  ExampleWindow* caller,
-  std::vector<std::string> id_vec,
-  std::string payload_string
+  ExampleWindow *caller,
+  Invoke_params *lambda_args
 )
 {
   {
@@ -62,9 +61,13 @@ void ExampleWorker::do_work(
   } // The mutex is unlocked here by lock's destructor.
 
   // Simulate a long calculation. REMOVE IT
-  for (uint i = 0; i < id_vec.size(); ++i) // do until break
+  for (uint i = 0; i < (*lambda_args).ids.size(); ++i) // do until break
   {
-    std::string cmd = this->build_cmd_params(i, &id_vec, &payload_string);
+    std::string cmd = this->build_cmd_params(
+      i,
+      &((*lambda_args).ids),
+      &((*lambda_args).payload)
+    );
 
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
 

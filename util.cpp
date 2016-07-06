@@ -138,7 +138,7 @@ void ExampleWindow::on_button_run()
     m_WorkerThread = new std::thread(
       [this]
       {
-        m_Worker.do_work(this, id_vector, payload_string);
+        m_Worker.do_work(this, &lambda_args);
       });
     }
   // CHECK: https://developer.gnome.org/gtkmm-tutorial/stable/sec-multithread-example.html.en
@@ -187,7 +187,7 @@ void ExampleWindow::get_cur_payload()
   Glib::RefPtr<Gtk::TextBuffer> tmp = m_TextView_Payload.get_buffer();
   std::string tmp_payload(tmp->get_text());
 
-  payload_string = tmp_payload;
+  lambda_args.payload = tmp_payload;
 }
 
 
@@ -196,7 +196,7 @@ void ExampleWindow::get_cur_payload()
  */
 void ExampleWindow::get_cur_ids()
 {
-  id_vector.clear();
+  lambda_args.ids.clear();
   Glib::RefPtr<Gtk::TextBuffer> tmp = m_TextView_Ids.get_buffer();
   std::string tmp_ids(tmp->get_text());
 
@@ -205,7 +205,7 @@ void ExampleWindow::get_cur_ids()
   std::string id;
   while (std::getline(iss, id))
   {
-    id_vector.push_back(id);
+    lambda_args.ids.push_back(id);
   }
 }
 
@@ -304,7 +304,6 @@ void ExampleWindow::on_button_payload_file_clicked()
   {
     case(Gtk::RESPONSE_OK):
     {
-      //Notice that this is a std::string, not a Glib::ustring.
       std::string filename = dialog.get_filename();
 
       this->read_payload_file(filename);
@@ -332,7 +331,7 @@ void ExampleWindow::read_id_file(std::string filename)
   std::string tmp_string;
   Glib::RefPtr<Gtk::TextBuffer> m_textbuffer = Gtk::TextBuffer::create();
 
-  id_vector.clear();
+  lambda_args.ids.clear();
   this->clear_ids_text_view();
 
   while (std::getline(infile, line))
@@ -341,12 +340,12 @@ void ExampleWindow::read_id_file(std::string filename)
       std::string a;
 
       if (!(iss >> a)) { break; }
-      id_vector.push_back(a);
+      lambda_args.ids.push_back(a);
 
       tmp_string += a + "\n";
   }
   this->set_ids_text_view_text(tmp_string);
-  std::cout << "Read in " << id_vector.size() << " IDs." << std::endl;
+  std::cout << "Read in " << lambda_args.ids.size() << " IDs." << std::endl;
 }
 
 
@@ -358,17 +357,17 @@ void ExampleWindow::read_payload_file(std::string filename)
   std::ifstream infile(filename);
   std::string line;
 
-  payload_string.clear();
+  lambda_args.payload.clear();
   this->clear_payload_text_view();
 
   while (std::getline(infile, line))
   {
-      payload_string += line + "\n";
+      lambda_args.payload += line + "\n";
   }
 
-  this->set_payload_text_view_text(payload_string);
+  this->set_payload_text_view_text(lambda_args.payload);
 
-  std::cout << "Size of payload: " << payload_string.size() << std::endl;
+  std::cout << "Size of payload: " << lambda_args.payload.size() << std::endl;
 }
 
 

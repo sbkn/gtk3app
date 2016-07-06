@@ -14,8 +14,7 @@ public:
   // Thread function.
   void do_work(
     ExampleWindow* caller,
-    std::vector<std::string> id_vec,
-    std::string payload_string
+    Invoke_params lambda_args
   );
 
   void get_data(double* fraction_done, Glib::ustring* message) const;

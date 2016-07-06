@@ -40,9 +40,6 @@ protected:
   void get_cur_payload();
   void get_cur_ids();
 
-  std::vector<std::string> id_vector;
-  std::string payload_string;
-
   Gtk::Box m_VBox, m_HBox, m_VBox_Ids, m_VBox_Payload;
 
   Gtk::ScrolledWindow m_ScrolledWindow_Ids;
