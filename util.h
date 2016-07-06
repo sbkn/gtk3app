@@ -3,6 +3,13 @@
 #include <gtkmm.h>
 #include "working.h"
 
+struct Invoke_params {
+  std::string function_name;
+  bool dry_run;
+  std::string payload;
+  std::vector<std::string> ids;
+} ;
+
 class ExampleWindow : public Gtk::Window
 {
 public:

@@ -4,6 +4,8 @@
 
 #include "util.h"
 
+Invoke_params lambda_args;
+
 ExampleWindow::ExampleWindow()
 : m_VBox(Gtk::ORIENTATION_VERTICAL),
   m_HBox(Gtk::ORIENTATION_HORIZONTAL),
@@ -90,6 +92,9 @@ ExampleWindow::ExampleWindow()
 
   fill_buffers();
   m_CheckButton_DryRun.set_active(true);
+  lambda_args.function_name = "vwfs-dmks-euw1-lambda-pias:test";
+  lambda_args.dry_run = true;
+  lambda_args.payload = "";
   on_button_savePayload();
 
   show_all_children();
@@ -120,7 +125,6 @@ void ExampleWindow::on_button_quit()
 
 void ExampleWindow::on_button_run()
 {
-  std::cout << "RUNNING IT!" << std::endl;
   this->get_cur_payload();
   this->get_cur_ids();
 
@@ -407,12 +411,11 @@ void ExampleWindow::on_notification_from_worker_thread()
   update_start_stop_buttons();
 }
 
+
 /*
  * HANDLE CHECKBUTTON FOR DRY RUN
  */
 void ExampleWindow::on_dryrun_button_clicked()
 {
-  std::cout << "The Button was clicked: state="
-      << (m_CheckButton_DryRun.get_active() ? "true" : "false")
-      << std::endl;
+  lambda_args.dry_run = m_CheckButton_DryRun.get_active();
 }
