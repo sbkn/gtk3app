@@ -1,7 +1,7 @@
 #pragma once
 
+#include <string>
 #include <gtkmm.h>
-#include "working.h"
 
 struct Invoke_params {
   std::string function_name;
@@ -9,6 +9,9 @@ struct Invoke_params {
   std::string payload;
   std::vector<std::string> ids;
 } ;
+
+#include "working.h"
+
 
 class ExampleWindow : public Gtk::Window
 {

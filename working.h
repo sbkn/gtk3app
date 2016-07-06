@@ -3,6 +3,7 @@
 #include <gtkmm.h>
 #include <thread>
 #include <mutex>
+#include "util.h"
 
 class ExampleWindow;
 
@@ -13,8 +14,8 @@ public:
 
   // Thread function.
   void do_work(
-    ExampleWindow* caller,
-    Invoke_params lambda_args
+    ExampleWindow *caller,
+    Invoke_params *lambda_args
   );
 
   void get_data(double* fraction_done, Glib::ustring* message) const;
