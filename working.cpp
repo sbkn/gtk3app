@@ -65,8 +65,7 @@ void ExampleWorker::do_work(
   {
     std::string cmd = this->build_cmd_params(
       i,
-      &((*lambda_args).ids),
-      &((*lambda_args).payload)
+      lambda_args
     );
 
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
@@ -127,23 +126,23 @@ void ExampleWorker::do_work(
 
 std::string ExampleWorker::build_cmd_params(
   int index_in_array,
-  std::vector<std::string> *id_vec,
-  std::string *payload_string
+  Invoke_params *lambda_args
 )
 {
-  std::string payload = (*payload_string);
+  std::string payload = lambda_args->payload;
+  std::string invocation_type = lambda_args->dry_run ? "DryRun" : "RequestResponse";
 
   this->finalize_payload(&payload);
-  this->insert_id_into_payload(&payload, (*id_vec)[index_in_array]);
+  this->insert_id_into_payload(&payload, lambda_args->ids[index_in_array]);
 
   //TODO: USE DryRun as invocation-type to simulate a run
   std::string cmd = std::string("aws lambda invoke") +
-  std::string(" --invocation-type RequestResponse") +
+  std::string(" --invocation-type ") + invocation_type +
   std::string(" --function-name vwfs-dmks-euw1-lambda-pias:test") +
   std::string(" --region eu-west-1") +
 	std::string(" --log-type Tail") +
 	std::string(" --payload \"") + std::string(payload) + "\"" +
-	std::string(" outputfile_") + std::string((*id_vec)[index_in_array]) +
+	std::string(" outputfile_") + std::string(lambda_args->ids[index_in_array]) +
   std::string(".txt");
 
   return cmd;
