@@ -433,6 +433,9 @@ void ExampleWindow::update_start_stop_buttons()
   const bool thread_is_running = m_WorkerThread != nullptr;
 
   m_Button_Run.set_sensitive(!thread_is_running);
+  m_CheckButton_DryRun.set_sensitive(!thread_is_running);
+  m_Button_LoadPayload.set_sensitive(!thread_is_running);
+  m_Button_IdFilePicker.set_sensitive(!thread_is_running);
   m_TextView_Ids.set_editable(!thread_is_running);
   m_TextView_Payload.set_editable(!thread_is_running);
 }
