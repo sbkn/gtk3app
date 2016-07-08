@@ -81,9 +81,9 @@ ExampleWindow::ExampleWindow()
   m_Button_Run.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_button_run) );
   m_Button_LoadPayload.signal_clicked().connect(sigc::mem_fun(*this,
-              &ExampleWindow::on_button_payload_file_clicked) );
+              &ExampleWindow::on_button_load_payload_file_clicked) );
   m_Button_SavePayload.signal_clicked().connect(sigc::mem_fun(*this,
-              &ExampleWindow::on_button_savePayload) );
+              &ExampleWindow::on_button_save_payload_file_clicked) );
   m_CheckButton_DryRun.signal_clicked().connect(sigc::mem_fun(*this,
               &ExampleWindow::on_dryrun_button_clicked) );
   m_Dispatcher.connect(
@@ -95,7 +95,6 @@ ExampleWindow::ExampleWindow()
   lambda_args.function_name = "vwfs-dmks-euw1-lambda-pias:test";
   lambda_args.dry_run = true;
   lambda_args.payload = "";
-  on_button_savePayload();
 
   show_all_children();
 }
@@ -143,11 +142,6 @@ void ExampleWindow::on_button_run()
     }
   // CHECK: https://developer.gnome.org/gtkmm-tutorial/stable/sec-multithread-example.html.en
   update_start_stop_buttons();
-}
-
-void ExampleWindow::on_button_savePayload()
-{
-  m_TextView_Payload.set_buffer(m_refTextBuffer1);
 }
 
 void ExampleWindow::set_ids_text_view_text(std::string text)
@@ -267,9 +261,9 @@ void ExampleWindow::on_button_id_file_clicked()
 
 
 /**
-  * FILEPICKER PAYLOAD
+  * FILEPICKER LOAD PAYLOAD
   */
-void ExampleWindow::on_button_payload_file_clicked()
+void ExampleWindow::on_button_load_payload_file_clicked()
 {
   Gtk::FileChooserDialog dialog("Choose a file with a payload",
           Gtk::FILE_CHOOSER_ACTION_OPEN);
@@ -307,6 +301,66 @@ void ExampleWindow::on_button_payload_file_clicked()
       std::string filename = dialog.get_filename();
 
       this->read_payload_file(filename);
+      break;
+    }
+    case(Gtk::RESPONSE_CANCEL):
+    {
+      break;
+    }
+    default:
+    {
+      break;
+    }
+  }
+}
+
+
+/**
+  * FILEPICKER SAVE PAYLOAD
+  */
+void ExampleWindow::on_button_save_payload_file_clicked()
+{
+  Gtk::FileChooserDialog dialog("Choose a file to save payload to",
+          Gtk::FILE_CHOOSER_ACTION_SAVE);
+  dialog.set_transient_for(*this);
+
+  //Add response buttons the the dialog:
+  dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+  dialog.add_button("_Open", Gtk::RESPONSE_OK);
+
+  //Add filters, so that only certain file types can be selected:
+
+  auto filter_csv = Gtk::FileFilter::create();
+  filter_csv->set_name("JSON files");
+  filter_csv->add_mime_type("application/json");
+  filter_csv->add_mime_type("*.json");
+  dialog.add_filter(filter_csv);
+
+  auto filter_text = Gtk::FileFilter::create();
+  filter_text->set_name("Text files");
+  filter_text->add_mime_type("text/plain");
+  dialog.add_filter(filter_text);
+
+  auto filter_any = Gtk::FileFilter::create();
+  filter_any->set_name("Any files");
+  filter_any->add_pattern("*");
+  dialog.add_filter(filter_any);
+
+  int result = dialog.run();
+
+  //Handle the response:
+  switch(result)
+  {
+    case(Gtk::RESPONSE_OK):
+    {
+      std::string filename = dialog.get_filename();
+
+      std::fstream mystream(filename,std::ios_base::app);
+      Glib::RefPtr<Gtk::TextBuffer> tmp = m_TextView_Payload.get_buffer();
+      std::string tmp_payload(tmp->get_text());
+      mystream << tmp_payload;
+      mystream.close();
+
       break;
     }
     case(Gtk::RESPONSE_CANCEL):

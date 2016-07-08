@@ -30,10 +30,10 @@ protected:
 
   void on_button_quit();
   void on_button_run();
-  void on_button_savePayload();
   void on_dryrun_button_clicked();
   void on_button_id_file_clicked();
-  void on_button_payload_file_clicked();
+  void on_button_load_payload_file_clicked();
+  void on_button_save_payload_file_clicked();
   void read_id_file(std::string);
   void read_payload_file(std::string);
   void set_ids_text_view_text(std::string);
