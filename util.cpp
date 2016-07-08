@@ -32,6 +32,10 @@ ExampleWindow::ExampleWindow()
   add(m_VBox_Ids);
   add(m_VBox_Payload);
 
+  // Add entry:
+  m_Entry_FuncName.set_max_length(50);
+  m_Entry_FuncName.set_text("vwfs-dmks-euw1-lambda-pias:test");
+
   // ADD IDS LABEL AND TEXTVIEW
   m_Label_Ids.set_text("IDs:");
   m_ScrolledWindow_Ids.add(m_TextView_Ids);
@@ -58,6 +62,7 @@ ExampleWindow::ExampleWindow()
   m_HBox.pack_start(m_VBox_Ids);
   m_HBox.pack_start(m_VBox_Payload);
   m_VBox.pack_start(m_HBox);
+  m_VBox.pack_start(m_Entry_FuncName, Gtk::PACK_EXPAND_PADDING);
 
   //Add buttons:
   m_VBox.pack_start(m_ButtonBox, Gtk::PACK_SHRINK);
@@ -126,6 +131,7 @@ void ExampleWindow::on_button_run()
 {
   this->get_cur_payload();
   this->get_cur_ids();
+  this->get_cur_func_name();
 
   if (m_WorkerThread)
   {
@@ -201,6 +207,15 @@ void ExampleWindow::get_cur_ids()
   {
     lambda_args.ids.push_back(id);
   }
+}
+
+
+/*
+ * GET THE FUNCTION NAME FROM ENTRY
+ */
+void ExampleWindow::get_cur_func_name()
+{
+  lambda_args.function_name = m_Entry_FuncName.get_text();
 }
 
 
@@ -438,6 +453,7 @@ void ExampleWindow::update_start_stop_buttons()
   m_Button_IdFilePicker.set_sensitive(!thread_is_running);
   m_TextView_Ids.set_editable(!thread_is_running);
   m_TextView_Payload.set_editable(!thread_is_running);
+  m_Entry_FuncName.set_editable(!thread_is_running);
 }
 
 

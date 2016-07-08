@@ -138,7 +138,7 @@ std::string ExampleWorker::build_cmd_params(
   //TODO: USE DryRun as invocation-type to simulate a run
   std::string cmd = std::string("aws lambda invoke") +
   std::string(" --invocation-type ") + invocation_type +
-  std::string(" --function-name vwfs-dmks-euw1-lambda-pias:test") +
+  std::string(" --function-name ") + lambda_args->function_name +
   std::string(" --region eu-west-1") +
 	std::string(" --log-type Tail") +
 	std::string(" --payload \"") + std::string(payload) + "\"" +

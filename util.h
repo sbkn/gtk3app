@@ -42,6 +42,7 @@ protected:
   void set_payload_text_view_text(std::string);
   void get_cur_payload();
   void get_cur_ids();
+  void get_cur_func_name();
 
   Gtk::Box m_VBox, m_HBox, m_VBox_Ids, m_VBox_Payload;
 
@@ -50,6 +51,8 @@ protected:
   Gtk::TextView m_TextView_Payload;
   Gtk::TextView m_TextView_Ids;
   Gtk::Label m_Label_Ids, m_Label_Payload;
+
+  Gtk::Entry m_Entry_FuncName;
 
   Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1;
 
