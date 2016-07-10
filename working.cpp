@@ -108,10 +108,6 @@ void ExampleWorker::do_work(
       }
       std::cout << result << std::endl;
 
-      //TODO: EVALUATE THE StatusCode OF result HERE
-
-
-
     caller->notify();
   }
 
@@ -135,7 +131,7 @@ std::string ExampleWorker::build_cmd_params(
   this->finalize_payload(&payload);
   this->insert_id_into_payload(&payload, lambda_args->ids[index_in_array]);
 
-  //TODO: USE DryRun as invocation-type to simulate a run
+  //TODO: USE --query TO FILTER THE BASE64 RESPONSE
   std::string cmd = std::string("aws lambda invoke") +
   std::string(" --invocation-type ") + invocation_type +
   std::string(" --function-name ") + lambda_args->function_name +
