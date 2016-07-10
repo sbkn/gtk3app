@@ -141,6 +141,7 @@ std::string ExampleWorker::build_cmd_params(
   std::string(" --function-name ") + lambda_args->function_name +
   std::string(" --region eu-west-1") +
 	std::string(" --log-type Tail") +
+	std::string(" --output text") +
 	std::string(" --payload \"") + std::string(payload) + "\"" +
 	std::string(" outputfile_") + std::string(lambda_args->ids[index_in_array]) +
   std::string(".txt");

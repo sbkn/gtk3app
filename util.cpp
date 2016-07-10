@@ -435,8 +435,6 @@ void ExampleWindow::read_payload_file(std::string filename)
   }
 
   this->set_payload_text_view_text(lambda_args.payload);
-
-  std::cout << "Size of payload: " << lambda_args.payload.size() << std::endl;
 }
 
 
@@ -478,7 +476,6 @@ void ExampleWindow::on_notification_from_worker_thread()
       m_WorkerThread->join();
     delete m_WorkerThread;
     m_WorkerThread = nullptr;
-    std::cout << "stopping worker" << std::endl;
   }
   update_start_stop_buttons();
 }
