@@ -131,15 +131,18 @@ std::string ExampleWorker::build_cmd_params(
   this->finalize_payload(&payload);
   this->insert_id_into_payload(&payload, lambda_args->ids[index_in_array]);
 
-  //TODO: USE --query TO FILTER THE BASE64 RESPONSE
   std::string cmd = std::string("aws lambda invoke") +
   std::string(" --invocation-type ") + invocation_type +
   std::string(" --function-name ") + lambda_args->function_name +
   std::string(" --region eu-west-1") +
 	std::string(" --log-type Tail") +
-	std::string(" --output text") +
+	std::string(" --output json") +
+	std::string(" --query 'LogResult'") +
 	std::string(" --payload \"") + std::string(payload) + "\"" +
-	std::string(" outputfile_") + std::string(lambda_args->ids[index_in_array]) +
+	std::string(" result_") + std::string(lambda_args->ids[index_in_array]) +
+  std::string(".txt") +
+  std::string(" | sed 's/\"//g' | base64 --decode") +
+  std::string(" > log_") + std::string(lambda_args->ids[index_in_array]) +
   std::string(".txt");
 
   return cmd;

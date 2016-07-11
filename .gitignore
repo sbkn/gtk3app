@@ -1,4 +1,5 @@
 *.gch
-outputfile_*.txt
+result_*.txt
+log_*.txt
 .DS_Store
 invoker
